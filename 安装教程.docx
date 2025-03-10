@@ -1,0 +1,127 @@
+安装 Uptime Kuma 是个不错的选择，它是一个自托管的监控工具，可以帮助你跟踪和监控你的网站和服务的在线状态。在 Ubuntu 系统上安装它的步骤比较直接。这里假设你已经有了一个运行中的 Ubuntu 系统和对基本的命令行操作有一定的了解。让我们一步一步来吧：
+
+1. 更新系统
+首先，打开终端，更新你的 Ubuntu 系统确保所有的包都是最新的。这可以帮助避免一些兼容性问题：
+
+bash
+sudo apt update && sudo apt upgrade -y
+2. 安装 Docker
+Uptime Kuma 通过 Docker 运行，因此你需要在系统上安装 Docker。输入以下命令来安装 Docker：
+
+bash
+sudo apt install docker.io -y
+3. 启动 Docker 服务
+确保 Docker 服务已经启动，并设置为开机启动：
+
+bash
+sudo systemctl start docker
+sudo systemctl enable docker
+4. 安装 Docker Compose (可选)
+如果你打算使用 Docker Compose 来运行 Uptime Kuma，你还需要安装 Docker Compose。这是可选的，但是 Docker Compose 可以让管理容器变得更简单。以下是安装命令：
+
+bash
+sudo apt install docker-compose -y
+5. 运行 Uptime Kuma
+有了 Docker 之后，你就可以直接使用 Docker 命令来运行 Uptime Kuma 了。通过以下命令，你可以拉取 Uptime Kuma 的 Docker 镜像并运行它：
+
+bash
+docker run -d --name uptime-kuma -p 3001:3001 -v uptime-kuma-data:/app/data --restart unless-stopped louislam/uptime-kuma
+
+docker run -d --name uptime-kuma-aiqingdao -p 3002:3001 -v uptime-kuma-aiqingdao:/app/data --restart unless-stopped louislam/uptime-kuma
+
+这个命令做了什么：
+
+-d 让容器在后台运行。
+--name uptime-kuma 给容器命名为 uptime-kuma。
+-p 3001:3001 将容器的 3001 端口映射到主机的 3001 端口。
+-v uptime-kuma-data:/app/data 将数据卷 uptime-kuma-data 挂载到容器的 /app/data。这样做的好处是，即使容器被删除，数据也不会丢失。
+--restart unless-stopped 确保除非你明确停止，否则容器会在重启后自动启动。
+louislam/uptime-kuma 是 Uptime Kuma 的 Docker 镜像。
+6. 访问 Uptime Kuma
+安装完成后，你可以通过浏览器访问 Uptime Kuma。在浏览器地址栏输入 http://你的服务器IP:3001。你应该能看到 Uptime Kuma 的界面，从这里开始你就可以配置监控你的服务了。
+
+以上就是在 Ubuntu 上安装 Uptime Kuma 的步骤。如果你有任何问题或者需要帮助，随时问我！
+
+Github安装：
+Docker
+
+docker run -d --restart=always -p 3001:3001 -v uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:1
+Uptime Kuma 目前正在http://0.0.0.0:3001上运行。
+警告
+不支持NFS（网络文件系统）等文件系统。请映射到本地目录或卷。
+笔记
+如果您想要限制对本地主机的暴露（而不向其他用户公开端口或使用反向代理），您可以像这样公开端口：
+docker run -d --restart=always -p 127.0.0.1:3001:3001 -v uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:1
+💪🏻 非 Docker
+
+要求：
+平台
+✅ 主要 Linux 发行版，例如 Debian、Ubuntu、CentOS、Fedora 和 ArchLinux 等。
+✅ Windows 10 (x64)、Windows Server 2012 R2 (x64) 或更高版本
+❌ FreeBSD / OpenBSD / NetBSD
+❌ Replit/Heroku
+Node.js 18 / 20.4
+npm 9
+Git
+pm2-用于在后台运行 Uptime Kuma
+git clone https://github.com/louislam/uptime-kuma.gitcd uptime-kuma
+npm run setup
+# Option 1. Try it
+node server/server.js
+# (Recommended) Option 2. Run in the background using PM2# Install PM2 if you don't have it:
+npm install pm2 -g && pm2 install pm2-logrotate
+# Start Server
+pm2 start server/server.js --name uptime-kuma
+Uptime Kuma 现已在http://localhost:3001上运行
+更多有用的 PM2 命令
+# If you want to see the current console output
+pm2 monit
+# If you want to add it to startup
+pm2 save && pm2 startup
+------------------------------------------------------------------------------------------------------------
+
+Uptime-kuma 修改名称和图标
+1：改标题名字
+将标题涉及的文件从docker中复制出来，命令：
+ docker cp uptime-kuma:/app/index.html   ./
+vi index.html
+
+
+保存后，将改完的文件拷贝回docker中去，命令：
+docker cp ./index.html uptime-kuma:/app/
+2.改项目名字
+将项目名字涉及的文件从docker中复制出来，命令：
+docker cp uptime-kuma:/app/src/layouts/Layout.vue ./
+vi Layout.vue
+
+保存后，将改完的文件拷贝回docker中去，命令：
+docker cp ./Layout.vue uptime-kuma:/app/src/layouts/
+
+3.改项目图标
+将图标涉及的文件从docker中复制出来，命令：
+docker cp uptime-kuma:/app/public/icon.svg ./
+vi icon.svg
+将内容全部替换为：
+<svg width="640" height="640" viewBox="0 0 640 640" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1 0 0 1 320 320)">
+    <linearGradient id="S3" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 1 -319.99875 -320.0001577393)" x1="259.78" y1="261.15" x2="463.85" y2="456.49">
+      <stop offset="0%" stop-color="#FF0000" /> <!-- Red -->
+      <stop offset="20%" stop-color="#FF7F00" /> <!-- Orange -->
+      <stop offset="40%" stop-color="#FFFF00" /> <!-- Yellow -->
+      <stop offset="60%" stop-color="#00FF00" /> <!-- Green -->
+      <stop offset="80%" stop-color="#0000FF" /> <!-- Blue -->
+      <stop offset="100%" stop-color="#8B00FF" /> <!-- Violet -->
+    </linearGradient>
+    <path style="stroke: rgb(242,242,242); stroke-opacity: 0.51; stroke-width: 200; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: url(#S3); fill-rule: nonzero; opacity: 1;" transform="translate(0, 0)" d="M 0 -200 C 100 -100 200 0 200 100 C 200 200 100 300 0 300 C -100 300 -200 200 -200 100 C -200 0 -100 -100 0 -200 Z" stroke-linecap="round" />
+  </g>
+</svg>
+保存后，将改完的文件拷贝回docker中去，命令：
+docker cp ./icon.svg uptime-kuma:/app/public/
+
+4:进入docker 容器 ，重新构建项目
+docker exec -it uptime-kuma /bin/sh 
+# npm install vite
+# npm run build 
+
+5:构建完成后，重启docker 容器
+docker restart d7e(容器ID)
